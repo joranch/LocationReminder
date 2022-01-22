@@ -12,7 +12,8 @@ import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,15 +27,18 @@ import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import java.util.*
 
-class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
+class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     //Use Koin to get the view model of the SaveReminder
     private lateinit var map: GoogleMap
+    private val runningQOrLater = android.os.Build.VERSION.SDK_INT >=
+            android.os.Build.VERSION_CODES.Q
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSelectLocationBinding
     private val REQUEST_LOCATION_PERMISSION = 99
     private var selectedLocation: Marker? = null
+
 
     companion object {
         const val DEFAULT_ZOOM = 15f
@@ -100,18 +104,22 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
         else -> super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
-        grantResults: IntArray) {
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                enableMyLocation()
+                //enableMyLocation()
+                map.isMyLocationEnabled = true
+                setInitialLocation()
+            } else {
+                //_viewModel.showSnackBarInt.value = R.string.permission_denied_explanation
             }
-        }else{
-            _viewModel.showSnackBarInt.value = R.string.permission_denied_explanation
         }
     }
 
@@ -137,21 +145,22 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
     private fun setPoiClickListener() {
         map.setOnPoiClickListener { poi ->
             addPoiMarker(poi)
-            selectedLocation!!.showInfoWindow()
+            selectedLocation?.showInfoWindow()
         }
     }
 
     private fun setLongClickListener() {
         map.setOnMapLongClickListener { latLng ->
             addMapMarker(latLng)
-            selectedLocation!!.showInfoWindow()
+            selectedLocation?.showInfoWindow()
         }
     }
 
     private fun setMapStyle(map: GoogleMap) {
         try {
             val success = map.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
+                MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style)
+            )
 
             if (!success) {
                 Log.e(TAG, "Style parsing failed")
@@ -187,19 +196,37 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
     }
 
     private fun enableMyLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
+        if (checkLocationPermission()) {
             return
         } else {
+//            map.isMyLocationEnabled = true
+//            setInitialLocation()
+            //_viewModel.showSnackBar.value = "Location permission missing"
+
+        }
+    }
+
+    private fun checkLocationPermission(): Boolean {
+
+        val fineLocationApproved = (PackageManager.PERMISSION_GRANTED ==
+                ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ))
+
+        return if (!fineLocationApproved) {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION
+            )
+
+            Log.d(TAG, "Location permissions missing. REQUESTING")
+            false
+        } else {
+            Log.d(TAG, "Location permissions GRANTED")
+
             map.isMyLocationEnabled = true
             setInitialLocation()
+            true
         }
     }
 
@@ -213,21 +240,23 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
             latLng.longitude
         )
 
-        selectedLocation = map.addMarker(MarkerOptions()
-            .position(latLng)
-            .title(getString(R.string.dropped_pin))
-            .snippet(snippet)
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        selectedLocation = map.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title(getString(R.string.dropped_pin))
+                .snippet(snippet)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
         )
     }
 
     private fun addPoiMarker(poi: PointOfInterest) {
         selectedLocation?.remove()
 
-        selectedLocation = map.addMarker(MarkerOptions()
-            .position(poi.latLng)
-            .title(poi.name)
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+        selectedLocation = map.addMarker(
+            MarkerOptions()
+                .position(poi.latLng)
+                .title(poi.name)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
         )
     }
 
