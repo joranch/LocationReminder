@@ -39,7 +39,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private val REQUEST_LOCATION_PERMISSION = 99
     private var selectedLocation: Marker? = null
 
-
     companion object {
         const val DEFAULT_ZOOM = 15f
         const val TAG = "SelectLocationFragment"
@@ -114,11 +113,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                //enableMyLocation()
                 map.isMyLocationEnabled = true
                 setInitialLocation()
-            } else {
-                //_viewModel.showSnackBarInt.value = R.string.permission_denied_explanation
             }
         }
     }
@@ -211,8 +207,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         val fineLocationApproved = (PackageManager.PERMISSION_GRANTED ==
                 ActivityCompat.checkSelfPermission(
                     requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ))
+                    Manifest.permission.ACCESS_FINE_LOCATION))
 
         return if (!fineLocationApproved) {
             requestPermissions(
