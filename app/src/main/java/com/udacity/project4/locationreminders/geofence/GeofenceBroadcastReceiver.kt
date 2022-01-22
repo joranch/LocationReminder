@@ -17,8 +17,7 @@ import android.content.Intent
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
-        const val ACTION_GEOFENCE_EVENT =
-            "locationreminders.geofence.action.ACTION_GEOFENCE_EVENT"
+        const val ACTION_GEOFENCE_EVENT = "locationreminders.geofence.action.ACTION_GEOFENCE_EVENT"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
