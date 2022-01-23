@@ -41,7 +41,7 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun loadRemindersError() {
+    fun shouldReturnError() {
         runBlockingTest {
             fakeReminderDataSource.setShouldThrowException(true)
             saveReminder()
@@ -54,7 +54,7 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun loadRemindersShowLoading() = runBlockingTest {
+    fun check_loading() = runBlockingTest {
         mainCoroutineRule.pauseDispatcher()
         saveReminder()
         viewModel.loadReminders()

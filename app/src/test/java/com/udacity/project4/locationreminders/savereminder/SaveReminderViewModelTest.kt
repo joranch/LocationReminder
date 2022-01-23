@@ -43,18 +43,18 @@ class SaveReminderViewModelTest: AutoCloseKoinTest(){
     }
 
     @Test
-    fun validateIncompleteReminderDataItemIsFalse() = runBlockingTest  {
+    fun shouldReturnError() = runBlockingTest  {
         val result = viewModel.validateEnteredData(createIncompleteReminderDataItem())
         MatcherAssert.assertThat(result, CoreMatchers.`is`(false))
     }
 
     @Test
-    fun isLoadingSetWhenSavingReminder() = runBlockingTest {
+    fun check_loading() = runBlockingTest {
         mainCoroutineRule.pauseDispatcher()
 
         viewModel.saveReminder(createFakeReminderDataItem())
         MatcherAssert.assertThat(viewModel.showLoading.value, CoreMatchers.`is`(true))
-        
+
         mainCoroutineRule.resumeDispatcher()
         MatcherAssert.assertThat(viewModel.showLoading.value, CoreMatchers.`is`(false))
     }
