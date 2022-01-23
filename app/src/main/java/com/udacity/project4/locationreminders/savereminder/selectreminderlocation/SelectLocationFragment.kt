@@ -1,6 +1,5 @@
 package com.udacity.project4.locationreminders.savereminder.selectreminderlocation
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -67,7 +66,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    override fun onMapReady(googlemap: GoogleMap?) {
+    override fun onMapReady(googlemap: GoogleMap)  {
         if (googlemap == null) {
             return
         }
@@ -119,12 +118,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    // In case initial position can't be found
     private fun moveToDefaultLocation() {
         val latitude = 37.422160
         val longitude = -122.084270
         val zoomLevel = 8f
 
         val homeLatLng = LatLng(latitude, longitude)
+        addMapMarker(homeLatLng)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
     }
 
@@ -174,9 +175,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             .addOnSuccessListener { location: Location? ->
 
                 location?.let {
-                    Log.d("LocationFragment", location.toString())
+                    Log.d(TAG, location.toString())
                     val latLng = LatLng(location.latitude, location.longitude)
 
+                    addMapMarker(latLng)
                     map.moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             latLng,
@@ -194,11 +196,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun enableMyLocation() {
         if (checkLocationPermission()) {
             return
-        } else {
-//            map.isMyLocationEnabled = true
-//            setInitialLocation()
-            //_viewModel.showSnackBar.value = "Location permission missing"
-
         }
     }
 

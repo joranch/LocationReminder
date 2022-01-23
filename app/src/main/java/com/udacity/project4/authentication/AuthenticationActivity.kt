@@ -39,8 +39,6 @@ class AuthenticationActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_authentication)
         binding.loginButton.setOnClickListener {
             launchSignInFlow()
-//            val intent = Intent(this, RemindersActivity::class.java)
-//            startActivity(intent)
         }
 
         observeAuthenticationState()
