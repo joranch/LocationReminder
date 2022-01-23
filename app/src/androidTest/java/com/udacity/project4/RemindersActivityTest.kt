@@ -2,7 +2,6 @@ package com.udacity.project4
 
 import android.app.Activity
 import android.app.Application
-import android.view.View
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
@@ -120,8 +119,10 @@ class RemindersActivityTest :
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.addReminderFAB)).perform(click())
-        onView(withId(R.id.reminderTitle)).perform(ViewActions.replaceText("title"))
-        onView(withId(R.id.reminderDescription)).perform(ViewActions.replaceText("description"))
+        onView(withId(R.id.reminderTitle))
+            .perform(ViewActions.replaceText("title"))
+        onView(withId(R.id.reminderDescription))
+            .perform(ViewActions.replaceText("description"))
         onView(withId(R.id.selectLocation)).perform(click())
         onView(withId(R.id.map)).perform(click())
         onView(withId(R.id.save_button)).perform(click())
@@ -129,7 +130,17 @@ class RemindersActivityTest :
 
 
         // Fails on api 30+
-        onView(withText(R.string.reminder_saved)).inRoot(withDecorView(not(`is`(getActivity(activityScenario).window.decorView))))
+        onView(withText(R.string.reminder_saved)).inRoot(
+            withDecorView(
+                not(
+                    `is`(
+                        getActivity(
+                            activityScenario
+                        ).window.decorView
+                    )
+                )
+            )
+        )
             .check(matches(isDisplayed()))
 
         activityScenario.close()

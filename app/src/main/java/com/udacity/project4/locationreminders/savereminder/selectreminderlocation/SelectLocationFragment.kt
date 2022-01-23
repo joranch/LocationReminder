@@ -66,7 +66,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    override fun onMapReady(googlemap: GoogleMap)  {
+    override fun onMapReady(googlemap: GoogleMap) {
         if (googlemap == null) {
             return
         }
@@ -204,7 +204,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         val fineLocationApproved = (PackageManager.PERMISSION_GRANTED ==
                 ActivityCompat.checkSelfPermission(
                     requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION))
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ))
 
         return if (!fineLocationApproved) {
             requestPermissions(
