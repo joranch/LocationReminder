@@ -33,6 +33,12 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         longitude.value = null
     }
 
+    fun deleteAllReminders() {
+        viewModelScope.launch {
+            dataSource.deleteAllReminders()
+        }
+    }
+
     /**
      * Validate the entered data then saves the reminder data to the DataSource
      */
