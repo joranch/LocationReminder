@@ -38,9 +38,9 @@ class AuthenticationActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_authentication)
         binding.loginButton.setOnClickListener {
-            //launchSignInFlow()
-            val intent = Intent(this, RemindersActivity::class.java)
-            startActivity(intent)
+            launchSignInFlow()
+//            val intent = Intent(this, RemindersActivity::class.java)
+//            startActivity(intent)
         }
 
         observeAuthenticationState()
@@ -53,7 +53,8 @@ class AuthenticationActivity : AppCompatActivity() {
 
     private fun launchSignInFlow() {
         val providers = arrayListOf(
-            AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build()
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
         )
 
         startActivityForResult(
