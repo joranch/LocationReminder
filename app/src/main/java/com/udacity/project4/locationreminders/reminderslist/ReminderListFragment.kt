@@ -85,7 +85,6 @@ class ReminderListFragment : BaseFragment() {
             }
         }
         return super.onOptionsItemSelected(item)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

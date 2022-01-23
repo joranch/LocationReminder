@@ -82,22 +82,24 @@ class SaveReminderFragment : BaseFragment() {
         }
 
         binding.saveReminder.setOnClickListener {
+            saveReminder()
+        }
+    }
 
+    private fun saveReminder() {
+        val title = _viewModel.reminderTitle.value
+        val description = _viewModel.reminderDescription.value
+        val location = _viewModel.reminderSelectedLocationStr.value
+        val latitude = _viewModel.latitude.value
+        val longitude = _viewModel.longitude.value
 
-            val title = _viewModel.reminderTitle.value
-            val description = _viewModel.reminderDescription.value
-            val location = _viewModel.reminderSelectedLocationStr.value
-            val latitude = _viewModel.latitude.value
-            val longitude = _viewModel.longitude.value
+        reminderDataItem = ReminderDataItem(title, description, location, latitude, longitude)
 
-            reminderDataItem = ReminderDataItem(title, description, location, latitude, longitude)
-
-            if(_viewModel.validateEnteredData(reminderDataItem)) {
-                if (checkPermissionsApproved()) {
-                    checkDeviceLocationSettingsAndStartGeofence()
-                } else {
-                    requestRequieredPermissions()
-                }
+        if (_viewModel.validateEnteredData(reminderDataItem)) {
+            if (checkPermissionsApproved()) {
+                checkDeviceLocationSettingsAndStartGeofence()
+            } else {
+                requestRequieredPermissions()
             }
         }
     }
