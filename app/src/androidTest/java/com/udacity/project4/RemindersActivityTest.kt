@@ -111,7 +111,6 @@ class RemindersActivityTest :
 
         val snackBarMessage = appContext.getString(R.string.err_enter_title)
         onView(withText(snackBarMessage)).check(matches(isDisplayed()))
-
         activityScenario.close()
     }
 
@@ -128,6 +127,8 @@ class RemindersActivityTest :
         onView(withId(R.id.save_button)).perform(click())
         onView(withId(R.id.saveReminder)).perform(click())
 
+
+        // Fails on api 30+
         onView(withText(R.string.reminder_saved)).inRoot(withDecorView(not(`is`(getActivity(activityScenario).window.decorView))))
             .check(matches(isDisplayed()))
 
