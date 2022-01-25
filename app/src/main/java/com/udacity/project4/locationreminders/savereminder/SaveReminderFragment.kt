@@ -2,6 +2,7 @@ package com.udacity.project4.locationreminders.savereminder
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentSender
@@ -173,7 +174,10 @@ class SaveReminderFragment : BaseFragment() {
         locationSettingsResponseTask.addOnFailureListener { exception ->
             if (exception is ResolvableApiException && resolve) {
                 try {
-                    exception.startResolutionForResult(requireActivity(), LOCATION_REQUEST_CODE)
+                    startIntentSenderForResult(
+                        exception.resolution.intentSender,
+                        LOCATION_REQUEST_CODE,
+                        null, 0, 0, 0, null)
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
                 }
@@ -190,6 +194,12 @@ class SaveReminderFragment : BaseFragment() {
             if (it.isSuccessful) {
                 addGeofence()
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == LOCATION_REQUEST_CODE) {
+            checkDeviceLocationSettingsAndStartGeofence(false)
         }
     }
 
