@@ -6,6 +6,7 @@ In LocationReminder a user can select a loction on a map and create a Reminder. 
 Uses the following libraries and frameworks:
 * [Koin](https://github.com/InsertKoinIO/koin) Lightweight dependency injection for kotlin
 * [Google Maps](https://developers.google.com/maps/documentation) For maps and places
+* [Firebase](https://firebase.google.com/docs/auth) Firebase Auth for user authentication
 
 Testing
 * [Mockito](https://github.com/mockito/mockito) Mocking framework
